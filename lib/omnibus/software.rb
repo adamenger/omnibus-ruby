@@ -503,7 +503,7 @@ module Omnibus
     # @todo What?!
     # @todo It seems that this is not used... remove it
     # @deprecated Use something else (?)
-    def command(*args)
+    def command(*)
       raise 'Method Moved.'
     end
 
