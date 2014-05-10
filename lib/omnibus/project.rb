@@ -94,7 +94,7 @@ module Omnibus
 
     def health_check_me
       if Ohai.platform == 'windows'
-        log.info { 'Skipping health check on Windows' }
+        log.info(log_key) { 'Skipping health check on Windows' }
       else
         # build a list of all whitelist files from all project dependencies
         whitelist_files = library.components.map { |component| component.whitelist_files }.flatten
@@ -940,6 +940,10 @@ PSTAMP=#{`hostname`.chomp + Time.now.utc.iso8601}
       end
 
       shellout!(command, cmd_options)
+    end
+
+    def log_key
+      @log_key ||= "#{super}: #{name}"
     end
   end
 end
