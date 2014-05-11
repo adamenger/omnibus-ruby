@@ -133,9 +133,8 @@ module Omnibus
         else
           cp_cmd = "cp #{config.package_dir}/* pkg/"
         end
-        shell = Mixlib::ShellOut.new(cp_cmd)
-        shell.run_command
-        shell.error!
+
+        shellout!(cp_cmd)
       end
     end
 
@@ -909,7 +908,7 @@ PSTAMP=#{`hostname`.chomp + Time.now.utc.iso8601}
       FileUtils.cp "#{package_scripts_path}/postinst", '/tmp/pkgmk/postinstall'
       FileUtils.cp "#{package_scripts_path}/postrm", '/tmp/pkgmk/postremove'
 
-      shellout!("pkgmk -o -r #{install_dirname} -d /tmp/pkgmk -f /tmp/pkgmk/Prototype", timeout: 3600)
+      shellout!("pkgmk -o -r #{install_dirname} -d /tmp/pkgmk -f /tmp/pkgmk/Prototype")
 
       system 'pkgchk -vd /tmp/pkgmk chef'
 
@@ -931,11 +930,6 @@ PSTAMP=#{`hostname`.chomp + Time.now.utc.iso8601}
     # @return [Mixlib::ShellOut] returns the underlying Mixlib::ShellOut
     #   object, so the caller can inspect the stdout and stderr.
     def run_package_command(cmd)
-      cmd_options = {
-        timeout: 3600,
-        cwd: config.package_dir,
-      }
-
       if cmd.is_a?(Array)
         command = cmd[0]
         cmd_options.merge!(cmd[1])
@@ -943,7 +937,7 @@ PSTAMP=#{`hostname`.chomp + Time.now.utc.iso8601}
         command = cmd
       end
 
-      shellout!(command, cmd_options)
+      shellout!(command, cwd: config.package_dir)
     end
 
     def log_key
